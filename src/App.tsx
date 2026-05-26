@@ -631,6 +631,27 @@ export default function App() {
     }
   }, [currentUser]);
 
+  const handleCSVFileSelect = (e: React.ChangeEvent<HTMLInputElement>, setter: (val: string) => void) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (!file.name.toLowerCase().endsWith('.csv') && file.type !== 'text/csv' && file.type !== 'application/vnd.ms-excel') {
+      alert("Invalid file format. Please upload a .csv file.");
+      e.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setter(content);
+    };
+    reader.onerror = () => {
+      alert("Failed to read file.");
+    };
+    reader.readAsText(file);
+  };
+
   const handleAddEmployee = async (e: React.FormEvent) => {
     e.preventDefault();
     setEmployeeError(null);
@@ -6157,7 +6178,7 @@ export default function App() {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="block text-sm font-medium">
-                    Paste CSV Data
+                    Upload CSV File
                   </label>
                   <Button
                     type="button"
@@ -6173,14 +6194,34 @@ export default function App() {
                     <DownloadIcon className="w-3 h-3 mr-1" /> Download Template
                   </Button>
                 </div>
-                <textarea
-                  required
-                  rows={10}
-                  className="w-full border rounded-md p-2 text-sm font-mono"
-                  placeholder="penNumber,name,category,currentUnit,homeUnit,YYYY-MM-DD(Unit),YYYY-MM-DD(Service),workingAs,leaveReason,lightDutyAs,leaveMonths"
-                  value={bulkCsvText}
-                  onChange={(e) => setBulkCsvText(e.target.value)}
-                ></textarea>
+                <div className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100/50 transition-all group relative">
+                  <input
+                    type="file"
+                    accept=".csv"
+                    required
+                    onChange={(e) => handleCSVFileSelect(e, setBulkCsvText)}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div className="flex flex-col items-center justify-center space-y-2">
+                    <div className="p-3 bg-white rounded-full shadow-sm group-hover:scale-110 transition-transform">
+                      <UploadIcon className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <p className="text-sm font-bold text-slate-700">
+                      {bulkCsvText ? "✅ File Loaded Ready for Upload" : "Click or Drag CSV File to Upload"}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      Standardized KSRTC Personnel Data Format (.csv)
+                    </p>
+                  </div>
+                </div>
+                {bulkCsvText && (
+                  <div className="mt-4 p-3 bg-blue-50/50 border border-blue-100 rounded-lg">
+                    <p className="text-[10px] font-bold text-blue-800 uppercase tracking-wider mb-2">Data Preview (First 2 rows)</p>
+                    <pre className="text-[10px] text-blue-900/70 font-mono overflow-hidden whitespace-nowrap overflow-ellipsis">
+                      {bulkCsvText.split('\n').slice(0, 3).join('\n')}
+                    </pre>
+                  </div>
+                )}
                 <p className="text-xs text-gray-500 mt-2">
                   Please include header row. Columns: PEN, Name, Category,
                   Current Unit, Home Unit, Date of Entry (Unit), Date of Entry
@@ -6430,25 +6471,9 @@ export default function App() {
               <div>
                 <div className="flex justify-between items-center mb-1.5">
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                    Paste CSV Data
+                    Upload CSV File
                   </label>
                   <div className="flex items-center gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="text-[11px] h-7 px-2.5 bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
-                      onClick={() => {
-                        const sampleData = "penNumber,targetUnit,targetDate,reason\n" + 
-                          employees.slice(0, 3).map((e, idx) => {
-                            const unitsList = units.filter(u => u.name !== e.currentUnit);
-                            const tUnit = unitsList[idx % unitsList.length]?.name || "Pappanamcode";
-                            return `${e.penNumber || "900012"},${tUnit},2026-06-01,Bulk Posting Order`;
-                          }).join("\n");
-                        setBulkTransferCsvText(sampleData);
-                      }}
-                    >
-                      💡 Load Example Data
-                    </Button>
                     <Button
                       type="button"
                       variant="link"
@@ -6464,15 +6489,31 @@ export default function App() {
                     </Button>
                   </div>
                 </div>
-                <textarea
-                  required
-                  rows={8}
-                  className="w-full border border-slate-250 rounded-md p-3 text-xs font-mono bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-500 transition-colors"
-                  placeholder="penNumber,targetUnit,YYYY-MM-DD,reason"
-                  value={bulkTransferCsvText}
-                  onChange={(e) => setBulkTransferCsvText(e.target.value)}
-                ></textarea>
-                <p className="text-[10px] text-gray-500 mt-1">
+                <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center bg-slate-50 hover:bg-slate-100/50 transition-all group relative">
+                  <input
+                    type="file"
+                    accept=".csv"
+                    required
+                    onChange={(e) => handleCSVFileSelect(e, setBulkTransferCsvText)}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div className="flex flex-col items-center justify-center space-y-2">
+                    <div className="p-3 bg-white rounded-full shadow-sm group-hover:scale-110 transition-transform">
+                      <ArrowRightLeftIcon className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <p className="text-xs font-bold text-slate-700">
+                      {bulkTransferCsvText ? "✅ Transfer File Loaded" : "Click to select Bulk Transfer CSV"}
+                    </p>
+                  </div>
+                </div>
+                {bulkTransferCsvText && (
+                  <div className="mt-4 p-3 bg-slate-100/50 border border-slate-200 rounded-lg">
+                    <pre className="text-[10px] text-slate-600 font-mono overflow-hidden whitespace-nowrap overflow-ellipsis">
+                      {bulkTransferCsvText.split('\n').slice(0, 2).join('\n')}
+                    </pre>
+                  </div>
+                )}
+                <p className="text-[10px] text-gray-500 mt-2">
                   Ensure target unit names match perfectly with the unit names registered in Depot Logistics.
                 </p>
               </div>
@@ -6524,7 +6565,7 @@ export default function App() {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="block text-sm font-medium">
-                    Paste CSV Data
+                    Upload CSV File
                   </label>
                   <Button
                     type="button"
@@ -6540,14 +6581,30 @@ export default function App() {
                     <DownloadIcon className="w-3 h-3 mr-1" /> Download Template
                   </Button>
                 </div>
-                <textarea
-                  required
-                  rows={10}
-                  className="w-full border rounded-md p-2 text-sm font-mono"
-                  placeholder="Unit Name,Category,Perm Strength,Badali Strength"
-                  value={bulkStrengthCsvText}
-                  onChange={(e) => setBulkStrengthCsvText(e.target.value)}
-                ></textarea>
+                <div className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100/50 transition-all group relative">
+                  <input
+                    type="file"
+                    accept=".csv"
+                    required
+                    onChange={(e) => handleCSVFileSelect(e, setBulkStrengthCsvText)}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div className="flex flex-col items-center justify-center space-y-2">
+                    <div className="p-3 bg-white rounded-full shadow-sm group-hover:scale-110 transition-transform">
+                      <TargetIcon className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <p className="text-sm font-bold text-slate-700">
+                      {bulkStrengthCsvText ? "✅ Strength Data Loaded" : "Click to select Strength CSV"}
+                    </p>
+                  </div>
+                </div>
+                {bulkStrengthCsvText && (
+                  <div className="mt-4 p-3 bg-slate-100/50 border border-slate-200 rounded-lg">
+                    <pre className="text-[10px] text-slate-600 font-mono overflow-hidden whitespace-nowrap overflow-ellipsis">
+                      {bulkStrengthCsvText.split('\n').slice(0, 2).join('\n')}
+                    </pre>
+                  </div>
+                )}
                 <p className="text-xs text-gray-500 mt-2">
                   Please include header row. Columns: Unit Name, Category, Perm
                   Strength, [Optional: Badali Strength].
