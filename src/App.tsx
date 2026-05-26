@@ -745,7 +745,8 @@ export default function App() {
     const rows = bulkCsvText
       .trim()
       .split("\n")
-      .map((r) => r.split(",").map((s) => s.trim()));
+      .map((r) => r.split(",").map((s) => s.trim()))
+      .filter((row) => row.some(cell => cell !== ""));
     if (rows.length < 2) {
       alert("Please provide at least a header row and one data row.");
       return;
@@ -875,7 +876,8 @@ export default function App() {
     const rows = bulkTransferCsvText
       .trim()
       .split("\n")
-      .map((r) => r.split(",").map((s) => s.trim()));
+      .map((r) => r.split(",").map((s) => s.trim()))
+      .filter((row) => row.some(cell => cell !== ""));
     if (rows.length < 2) {
       alert("Please provide at least a header row and one data row.");
       return;
@@ -933,7 +935,8 @@ export default function App() {
     const rows = bulkStrengthCsvText
       .trim()
       .split("\n")
-      .map((r) => r.split(",").map((s) => s.trim()));
+      .map((r) => r.split(",").map((s) => s.trim()))
+      .filter((row) => row.some(cell => cell !== ""));
     if (rows.length < 2) {
       alert("Please provide at least a header row and one data row.");
       return;
