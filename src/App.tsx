@@ -753,17 +753,17 @@ export default function App() {
     }
     const data = rows.slice(1).map((row) => ({
       penNumber: (row[0] || "").replace(/\s+/g, ""),
-      name: row[1],
-      category: row[2],
-      currentUnit: row[3],
-      homeUnit: row[4],
-      dateOfEntry: row[5],
-      dateOfEntryInService: row[6],
-      workingAs: row[7],
-      leaveReason: row[8],
-      lightDutyAs: row[9],
+      name: row[1] || "",
+      category: row[2] || "",
+      currentUnit: row[3] || "",
+      homeUnit: row[4] || "",
+      dateOfEntry: row[5] || "",
+      dateOfEntryInService: row[6] || "",
+      workingAs: row[7] || "",
+      leaveReason: row[8] || "",
+      lightDutyAs: row[9] || "",
       leaveMonths: Number(row[10]) || 0,
-    }));
+    })).filter(e => e.penNumber || e.name);
 
     const invalidRows = data.filter((e) => !e.name || !e.penNumber);
     if (invalidRows.length > 0) {
@@ -884,10 +884,10 @@ export default function App() {
     }
     const data = rows.slice(1).map((row) => ({
       penNumber: (row[0] || "").replace(/\s+/g, ""),
-      targetUnit: row[1],
-      targetDate: row[2],
+      targetUnit: row[1] || "",
+      targetDate: row[2] || "",
       reason: row[3] || "Bulk Transfer",
-    }));
+    })).filter(t => t.penNumber || t.targetUnit);
 
     const invalidRows = data.filter((t) => !t.penNumber || !t.targetUnit);
     if (invalidRows.length > 0) {
