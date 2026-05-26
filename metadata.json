@@ -1,0 +1,6 @@
+{
+  "name": "KSRTC Transfer Management",
+  "description": "A well-structured report website for transfer management and strength analysis of KSRTC employees.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

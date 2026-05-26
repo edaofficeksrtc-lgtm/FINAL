@@ -1,0 +1,129 @@
+{
+  "entities": {
+    "Employee": {
+      "title": "Employee",
+      "description": "KSRTC Employee record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "penNumber": { "type": "string" },
+        "name": { "type": "string" },
+        "dob": { "type": "string" },
+        "category": { "type": "string" },
+        "currentUnit": { "type": "string" },
+        "homeUnit": { "type": "string" },
+        "monthsInCurrentUnit": { "type": "number" },
+        "workingAs": { "type": "string" },
+        "leaveReason": { "type": "string" },
+        "leaveMonths": { "type": "number" },
+        "lightDutyAs": { "type": "string" },
+        "dateOfEntryInService": { "type": "string" },
+        "dateOfEntry": { "type": "string" },
+        "isDeleted": { "type": "boolean" },
+        "isDeceased": { "type": "boolean" },
+        "isBadali": { "type": "boolean" },
+        "suspensionReason": { "type": "string" },
+        "deputationTo": { "type": "string" },
+        "trainingType": { "type": "string" },
+        "workArrangementUnit": { "type": "string" },
+        "workArrangementFromDate": { "type": "string" },
+        "workArrangementToDate": { "type": "string" },
+        "workArrangementReason": { "type": "string" },
+        "workArrangementOrderNo": { "type": "string" },
+        "distanceToHome": { "type": "number" }
+      },
+      "required": ["id", "penNumber", "name", "category", "currentUnit", "homeUnit"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Employee Designation Category",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "group": { "type": "string" },
+        "designationLevel": { "type": "number" },
+        "department": { "type": "string" },
+        "categoryType": { "type": "string" },
+        "transferType": { "type": "string" },
+        "seniorityType": { "type": "string" },
+        "sanctionedStrengthEnabled": { "type": "boolean" },
+        "isLowStrengthCategory": { "type": "boolean" },
+        "isSpecialCategory": { "type": "boolean" },
+        "displayOrder": { "type": "number" },
+        "colorCode": { "type": "string" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["id", "code", "name"]
+    },
+    "CategoryGroup": {
+      "title": "CategoryGroup",
+      "description": "Category Grouping",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "color": { "type": "string" },
+        "displayOrder": { "type": "number" }
+      },
+      "required": ["id", "name"]
+    },
+    "HistoryEvent": {
+      "title": "HistoryEvent",
+      "description": "Audit trail log of activities",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "employeeId": { "type": "string" },
+        "penNumber": { "type": "string" },
+        "eventType": { "type": "string" },
+        "oldUnit": { "type": "string" },
+        "newUnit": { "type": "string" },
+        "oldCategory": { "type": "string" },
+        "newCategory": { "type": "string" },
+        "remarks": { "type": "string" }
+      },
+      "required": ["id", "createdAt", "employeeId", "eventType"]
+    },
+    "Unit": {
+      "title": "Unit",
+      "description": "KSRTC Office/Depot Unit",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "circleName": { "type": "string" },
+        "zone": { "type": "string" },
+        "isSpecialUnit": { "type": "boolean" },
+        "sanctionedStrength": { "type": "object" },
+        "sanctionedBadaliStrength": { "type": "object" }
+      },
+      "required": ["id", "name"]
+    }
+  },
+  "firestore": {
+    "employees": {
+      "schema": { "$ref": "Employee" },
+      "description": "Collection of employee records"
+    },
+    "categories": {
+      "schema": { "$ref": "Category" },
+      "description": "Collection of employee designation categories"
+    },
+    "categoryGroups": {
+      "schema": { "$ref": "CategoryGroup" },
+      "description": "Collection of category groups"
+    },
+    "history": {
+      "schema": { "$ref": "HistoryEvent" },
+      "description": "Collection of transfer and audit logs"
+    },
+    "units": {
+      "schema": { "$ref": "Unit" },
+      "description": "Collection of KSRTC Unit depots and offices"
+    }
+  }
+}

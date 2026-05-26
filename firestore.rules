@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny-all catch-all rule for extra security
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwnerOfProfile(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Employees Collection Security Rules
+    match /employees/{employeeId} {
+      allow read, write: if true;
+    }
+
+    // Categories Collection Security Rules
+    match /categories/{categoryId} {
+      allow read, write: if true;
+    }
+
+    // Category Groups Collection Security Rules
+    match /categoryGroups/{groupId} {
+      allow read, write: if true;
+    }
+
+    // Units Collection Security Rules
+    match /units/{unitId} {
+      allow read, write: if true;
+    }
+
+    // History logs Collection Security Rules
+    match /history/{historyId} {
+      allow read, create: if true;
+      allow update, delete: if false; // Audit logs should be immutable
+    }
+
+    // Unit Logins Collection Security Rules
+    match /unit_logins/{loginId} {
+      allow read, write: if true;
+    }
+  }
+}
